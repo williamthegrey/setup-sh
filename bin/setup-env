@@ -1,16 +1,27 @@
 #!/bin/sh
 
 
-SYS_BIN_DIR="/usr/bin"
-LOCAL_BIN_DIR="bin"
+get_dir() {
+    local sys_dir="$1"
+    local dev_dir="$2"
+    if [ "$dev" = true ]; then
+        echo "$base_dir/$dev_dir"
+    else
+        echo "$sys_dir"
+    fi
+}
+
 
 script="$0"
 script=$(realpath "$script")
 script_dir=$(dirname "$script")
 
-local_bin_dir=$(basename "$script_dir")
-if [ "$local_bin_dir" != "$LOCAL_BIN_DIR" ]; then
-    echo "Error: Projects compatible with Setup.sh should put the entrance script in a 'bin' dir"
+SYS_BIN_DIR="/usr/bin"
+DEV_BIN_DIR="bin"
+
+dev_bin_dir=$(basename "$script_dir")
+if [ "$dev_bin_dir" != "$DEV_BIN_DIR" ]; then
+    echo "Error: Projects compatible with Setup.sh should put the entrance scripts in a 'bin' dir"
     exit 1
 fi
 
@@ -23,20 +34,26 @@ fi
 export DEV="$dev"
 
 
-if [ "$dev" = true ]; then
-    bin_dir="$base_dir/$LOCAL_BIN_DIR"
-else
-    bin_dir="$SYS_BIN_DIR"
-fi
+bin_dir=$(get_dir "$SYS_BIN_DIR" "$DEV_BIN_DIR")
 export BIN_DIR="$bin_dir"
 
 
-SYS_ETC_DIR="/etc"
-LOCAL_ETC_DIR="etc"
+SYS_LIB_DIR="/usr/lib"
+DEV_LIB_DIR="lib"
 
-if [ "$dev" = true ]; then
-    etc_dir="$base_dir/$LOCAL_ETC_DIR"
-else
-    etc_dir="$SYS_ETC_DIR"
-fi
+lib_dir=$(get_dir "$SYS_LIB_DIR" "$DEV_LIB_DIR")
+export LIB_DIR="$lib_dir"
+
+
+SYS_SHARE_DIR="/usr/share"
+DEV_SHARE_DIR="share"
+
+share_dir=$(get_dir "$SYS_SHARE_DIR" "$DEV_SHARE_DIR")
+export SHARE_DIR="$share_dir"
+
+
+SYS_ETC_DIR="/etc"
+DEV_ETC_DIR="etc"
+
+etc_dir=$(get_dir "$SYS_ETC_DIR" "$DEV_ETC_DIR")
 export ETC_DIR="$etc_dir"
