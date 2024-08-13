@@ -1,0 +1,42 @@
+#!/bin/sh
+
+
+SYS_BIN_DIR="/usr/bin"
+LOCAL_BIN_DIR="bin"
+
+script="$0"
+script=$(realpath "$script")
+script_dir=$(dirname "$script")
+
+local_bin_dir=$(basename "$script_dir")
+if [ "$local_bin_dir" != "$LOCAL_BIN_DIR" ]; then
+    echo "Error: Projects compatible with Setup.sh should put the entrance script in a 'bin' dir"
+    exit 1
+fi
+
+if [ "$script_dir" = "$SYS_BIN_DIR" ]; then
+    dev=false
+else
+    base_dir=$(dirname "$script_dir")
+    dev=true
+fi
+export DEV="$dev"
+
+
+if [ "$dev" = true ]; then
+    bin_dir="$base_dir/$LOCAL_BIN_DIR"
+else
+    bin_dir="$SYS_BIN_DIR"
+fi
+export BIN_DIR="$bin_dir"
+
+
+SYS_ETC_DIR="/etc"
+LOCAL_ETC_DIR="etc"
+
+if [ "$dev" = true ]; then
+    etc_dir="$base_dir/$LOCAL_ETC_DIR"
+else
+    etc_dir="$SYS_ETC_DIR"
+fi
+export ETC_DIR="$etc_dir"
