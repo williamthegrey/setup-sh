@@ -1,0 +1,4 @@
+bin_dirs=bin:/usr/bin
+lib_dirs=lib:/usr/lib
+share_dirs=share:/usr/share
+etc_dirs=etc:/etc

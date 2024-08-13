@@ -1,9 +1,56 @@
 #!/bin/sh
 
+get_config() {
+    while IFS='=' read key value; do
+        if [ "$key" = "bin_dirs" ]; then
+            dev_bin_dir="${value%:*}"
+            sys_bin_dir="${value#*:}"
+        elif [ "$key" = "lib_dirs" ]; then
+            dev_lib_dir="${value%:*}"
+            sys_lib_dir="${value#*:}"
+        elif [ "$key" = "share_dirs" ]; then
+            dev_share_dir="${value%:*}"
+            sys_share_dir="${value#*:}"
+        elif [ "$key" = "etc_dirs" ]; then
+            dev_etc_dir="${value%:*}"
+            sys_etc_dir="${value#*:}"
+        fi
+    done <"/etc/setup.conf"
+}
+
+export_dev() {
+    script_bin_dir=$(basename "$script_dir")
+    if [ "$script_bin_dir" != "$dev_bin_dir" ]; then
+        echo "Error: Projects compatible with Setup.sh should put the entrance scripts in a 'bin' dir"
+        exit 1
+    fi
+
+    if [ "$script_dir" = "$sys_bin_dir" ]; then
+        dev=false
+    else
+        base_dir=$(dirname "$script_dir")
+        dev=true
+    fi
+    export DEV="$dev"
+}
+
+export_dirs() {
+    bin_dir=$(get_dir "$dev_bin_dir" "$sys_bin_dir")
+    export BIN_DIR="$bin_dir"
+
+    lib_dir=$(get_dir "$dev_lib_dir" "$sys_lib_dir")
+    export LIB_DIR="$lib_dir"
+
+    share_dir=$(get_dir "$dev_share_dir" "$sys_share_dir")
+    export SHARE_DIR="$share_dir"
+
+    etc_dir=$(get_dir "$dev_etc_dir" "$sys_etc_dir")
+    export ETC_DIR="$etc_dir"
+}
 
 get_dir() {
-    local sys_dir="$1"
-    local dev_dir="$2"
+    local dev_dir="$1"
+    local sys_dir="$2"
     if [ "$dev" = true ]; then
         echo "$base_dir/$dev_dir"
     else
@@ -11,49 +58,9 @@ get_dir() {
     fi
 }
 
-
-script="$0"
-script=$(realpath "$script")
+script=$(realpath "$0")
 script_dir=$(dirname "$script")
 
-SYS_BIN_DIR="/usr/bin"
-DEV_BIN_DIR="bin"
-
-dev_bin_dir=$(basename "$script_dir")
-if [ "$dev_bin_dir" != "$DEV_BIN_DIR" ]; then
-    echo "Error: Projects compatible with Setup.sh should put the entrance scripts in a 'bin' dir"
-    exit 1
-fi
-
-if [ "$script_dir" = "$SYS_BIN_DIR" ]; then
-    dev=false
-else
-    base_dir=$(dirname "$script_dir")
-    dev=true
-fi
-export DEV="$dev"
-
-
-bin_dir=$(get_dir "$SYS_BIN_DIR" "$DEV_BIN_DIR")
-export BIN_DIR="$bin_dir"
-
-
-SYS_LIB_DIR="/usr/lib"
-DEV_LIB_DIR="lib"
-
-lib_dir=$(get_dir "$SYS_LIB_DIR" "$DEV_LIB_DIR")
-export LIB_DIR="$lib_dir"
-
-
-SYS_SHARE_DIR="/usr/share"
-DEV_SHARE_DIR="share"
-
-share_dir=$(get_dir "$SYS_SHARE_DIR" "$DEV_SHARE_DIR")
-export SHARE_DIR="$share_dir"
-
-
-SYS_ETC_DIR="/etc"
-DEV_ETC_DIR="etc"
-
-etc_dir=$(get_dir "$SYS_ETC_DIR" "$DEV_ETC_DIR")
-export ETC_DIR="$etc_dir"
+get_config
+export_dev
+export_dirs
