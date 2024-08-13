@@ -1,0 +1,157 @@
+#!/bin/sh
+
+get_config() {
+    while IFS='=' read key value; do
+        if [ "$key" = "bin_dirs" ]; then
+            dev_bin_dir="${value%:*}"
+            sys_bin_dir="${value#*:}"
+        elif [ "$key" = "lib_dirs" ]; then
+            dev_lib_dir="${value%:*}"
+            sys_lib_dir="${value#*:}"
+        elif [ "$key" = "share_dirs" ]; then
+            dev_share_dir="${value%:*}"
+            sys_share_dir="${value#*:}"
+        elif [ "$key" = "etc_dirs" ]; then
+            dev_etc_dir="${value%:*}"
+            sys_etc_dir="${value#*:}"
+        fi
+    done <"/etc/setup.conf"
+}
+
+install() {
+    copy_files "$dev_bin_dir" "$sys_bin_dir"
+    copy_files "$dev_lib_dir" "$sys_lib_dir"
+    copy_files "$dev_share_dir" "$sys_share_dir"
+    copy_files "$dev_etc_dir" "$sys_etc_dir"
+    echo "Done"
+}
+
+copy_files() {
+    local src_dir="$1"
+    local dst_dir="$2"
+
+    if [ -d "$src_dir" ]; then
+        mkdir -p "$dst_dir"
+        for_each_child_dir "$src_dir" "$dst_dir" create_dir
+        if [ "$dst_dir" = "$sys_etc_dir" ]; then
+            for_each_file "$src_dir" "$dst_dir" copy_etc_file
+        else
+            for_each_file "$src_dir" "$dst_dir" copy_file
+            if [ "$dst_dir" = "$sys_bin_dir" ]; then
+                for_each_file "$src_dir" "$dst_dir" make_executable
+            fi
+        fi
+    fi
+}
+
+copy_file() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    cp "$src_file" "$dst_file"
+}
+
+copy_etc_file() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    # When two $src_file are almost the same except for one of them has a '.sample' extension
+    # Only copy the one with the '.sample' extension
+    if [ ! -f "$src_file.sample" ]; then
+        # Remove the '.sample' extension when copying
+        local final_dst_file="${dst_file%.sample}"
+        # Avoid overwriting $final_dst_file from previous installation
+        if [ ! -f "$final_dst_file" ]; then
+            cp "$src_file" "$final_dst_file"
+        fi
+    fi
+}
+
+make_executable() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    chmod a+x "$dst_file"
+}
+
+create_dir() {
+    local src_dir="$1"
+    local dst_dir="$2"
+
+    mkdir -p "$dst_dir"
+}
+
+uninstall() {
+    remove_files "$dev_bin_dir" "$sys_bin_dir"
+    remove_files "$dev_lib_dir" "$sys_lib_dir"
+    remove_files "$dev_share_dir" "$sys_share_dir"
+    # Avoid removing files in sys_conf_dir and preserve relative administration efforts
+    echo "Done"
+}
+
+remove_files() {
+    local src_dir="$1"
+    local dst_dir="$2"
+
+    if [ -d "$src_dir" ]; then
+        for_each_file "$src_dir" "$dst_dir" remove_file
+        for_each_child_dir "$src_dir" "$dst_dir" remove_dir
+    fi
+}
+
+remove_file() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    rm -f "$dst_file"
+}
+
+remove_dir() {
+    local src_dir="$1"
+    local dst_dir="$2"
+
+    rm -rf "$dst_dir"
+}
+
+for_each_file() {
+    local src_dir="$1"
+    local dst_dir="$2"
+    local func="$3"
+
+    find "$src_dir" -type f | while read src_file; do
+        local dst_file="$dst_dir/${src_file#*/}"
+        "$func" "$src_file" "$dst_file"
+    done
+}
+
+for_each_child_dir() {
+    local src_dir="$1"
+    local dst_dir="$2"
+    local func="$3"
+
+    find "$src_dir"/* -type d | while read src_child_dir; do
+        local dst_child_dir="$dst_dir/${src_child_dir#*/}"
+        "$func" "$src_child_dir" "$dst_child_dir"
+    done
+}
+
+usage() {
+    echo "Usage:"
+    echo "\tsetup install"
+    echo "\tsetup uninstall"
+}
+
+get_config
+
+command="$1"
+if [ "$#" -ne 1 ]; then
+    usage
+    exit 1
+elif [ $command = "install" ]; then
+    install
+elif [ $command = "uninstall" ]; then
+    uninstall
+else
+    usage
+    exit 1
+fi

@@ -7,16 +7,16 @@
         {
             "type": "node-terminal",
             "request": "launch",
-            "name": "Run (setup-env)",
+            "name": "Run (setup)",
             "cwd": "${workspaceFolder}",
-            "command": "bin/setup-env"
+            "command": "bin/setup"
         },
         {
             "type": "bashdb",
             "request": "launch",
-            "name": "Bash-Debug (setup-env)",
+            "name": "Bash-Debug (setup)",
             "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/bin/setup-env",
+            "program": "${workspaceFolder}/bin/setup",
             "args": []
         }
     ]
