@@ -1,23 +1,5 @@
 #!/bin/sh
 
-get_config() {
-    while IFS='=' read key value; do
-        if [ "$key" = "bin_dirs" ]; then
-            dev_bin_dir="${value%:*}"
-            sys_bin_dir="${value#*:}"
-        elif [ "$key" = "lib_dirs" ]; then
-            dev_lib_dir="${value%:*}"
-            sys_lib_dir="${value#*:}"
-        elif [ "$key" = "share_dirs" ]; then
-            dev_share_dir="${value%:*}"
-            sys_share_dir="${value#*:}"
-        elif [ "$key" = "etc_dirs" ]; then
-            dev_etc_dir="${value%:*}"
-            sys_etc_dir="${value#*:}"
-        fi
-    done <"/etc/setup.conf"
-}
-
 export_dev() {
     local script_bin_dir=$(basename "$script_dir")
     if [ "$script_bin_dir" != "$dev_bin_dir" ]; then
@@ -50,9 +32,10 @@ get_dir() {
     fi
 }
 
+. "/usr/lib/setup-config"
+
 script=$(realpath "$0")
 script_dir=$(dirname "$script")
 
-get_config
 export_dev
 export_dirs

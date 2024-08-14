@@ -1,23 +1,5 @@
 #!/bin/sh
 
-get_config() {
-    while IFS='=' read key value; do
-        if [ "$key" = "bin_dirs" ]; then
-            dev_bin_dir="${value%:*}"
-            sys_bin_dir="${value#*:}"
-        elif [ "$key" = "lib_dirs" ]; then
-            dev_lib_dir="${value%:*}"
-            sys_lib_dir="${value#*:}"
-        elif [ "$key" = "share_dirs" ]; then
-            dev_share_dir="${value%:*}"
-            sys_share_dir="${value#*:}"
-        elif [ "$key" = "etc_dirs" ]; then
-            dev_etc_dir="${value%:*}"
-            sys_etc_dir="${value#*:}"
-        fi
-    done <"/etc/setup.conf"
-}
-
 install() {
     copy_files "$dev_bin_dir" "$sys_bin_dir"
     copy_files "$dev_lib_dir" "$sys_lib_dir"
@@ -129,7 +111,7 @@ for_each_child_dir() {
     local dst_dir="$2"
     local func="$3"
 
-    find "$src_dir"/* -type d | while read src_child_dir; do
+    find "$src_dir" -type d -path "$src_dir/*" | while read src_child_dir; do
         local dst_child_dir="$dst_dir/${src_child_dir#*/}"
         "$func" "$src_child_dir" "$dst_child_dir"
     done
@@ -141,15 +123,14 @@ usage() {
     echo "\tsetup uninstall"
 }
 
-get_config
+. "/usr/lib/setup-config"
 
-command="$1"
 if [ "$#" -ne 1 ]; then
     usage
     exit 1
-elif [ $command = "install" ]; then
+elif [ "$1" = "install" ]; then
     install
-elif [ $command = "uninstall" ]; then
+elif [ "$1" = "uninstall" ]; then
     uninstall
 else
     usage
