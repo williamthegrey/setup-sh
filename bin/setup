@@ -118,9 +118,9 @@ for_each_child_dir() {
 }
 
 usage() {
-    echo "Usage:"
-    echo "\tsetup install"
-    echo "\tsetup uninstall"
+    /bin/echo -e "Usage:"
+    /bin/echo -e "\tsetup install"
+    /bin/echo -e "\tsetup uninstall"
 }
 
 . "/usr/lib/setup-config"
