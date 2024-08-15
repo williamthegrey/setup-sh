@@ -19,6 +19,7 @@ export_dirs() {
     BIN_DIR=$(get_dir "$dev_bin_dir" "$sys_bin_dir")
     LIB_DIR=$(get_dir "$dev_lib_dir" "$sys_lib_dir")
     SHARE_DIR=$(get_dir "$dev_share_dir" "$sys_share_dir")
+    INIT_DIR=$(get_dir "$dev_init_dir" "$sys_init_dir")
     ETC_DIR=$(get_dir "$dev_etc_dir" "$sys_etc_dir")
 }
 

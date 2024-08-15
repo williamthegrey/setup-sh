@@ -4,6 +4,7 @@ install() {
     copy_files "$dev_bin_dir" "$sys_bin_dir"
     copy_files "$dev_lib_dir" "$sys_lib_dir"
     copy_files "$dev_share_dir" "$sys_share_dir"
+    copy_files "$dev_init_dir" "$sys_init_dir"
     copy_files "$dev_etc_dir" "$sys_etc_dir"
     echo "Done"
 }
@@ -19,7 +20,7 @@ copy_files() {
             for_each_file "$src_dir" "$dst_dir" copy_etc_file
         else
             for_each_file "$src_dir" "$dst_dir" copy_file
-            if [ "$dst_dir" = "$sys_bin_dir" ]; then
+            if [ "$dst_dir" = "$sys_bin_dir" ] || [ "$dst_dir" = "$sys_init_dir" ]; then
                 for_each_file "$src_dir" "$dst_dir" make_executable
             fi
         fi
@@ -67,6 +68,7 @@ uninstall() {
     remove_files "$dev_bin_dir" "$sys_bin_dir"
     remove_files "$dev_lib_dir" "$sys_lib_dir"
     remove_files "$dev_share_dir" "$sys_share_dir"
+    remove_files "$dev_init_dir" "$sys_init_dir"
     # Avoid removing files in sys_conf_dir and preserve relative administration efforts
     echo "Done"
 }

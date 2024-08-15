@@ -11,6 +11,9 @@ get_config() {
         elif [ "$key" = "share_dirs" ]; then
             dev_share_dir="${value%:*}"
             sys_share_dir="${value#*:}"
+        elif [ "$key" = "init_dirs" ]; then
+            dev_init_dir="${value%:*}"
+            sys_init_dir="${value#*:}"
         elif [ "$key" = "etc_dirs" ]; then
             dev_etc_dir="${value%:*}"
             sys_etc_dir="${value#*:}"
