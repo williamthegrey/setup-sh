@@ -1,5 +1,5 @@
 bin_dirs=bin:/usr/bin
 lib_dirs=lib:/usr/lib
 share_dirs=share:/usr/share
-init_dirs=init.d:/etc/init.d
+init_dirs=init:/etc/init.d
 etc_dirs=etc:/etc
