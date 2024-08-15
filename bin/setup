@@ -1,11 +1,15 @@
 #!/bin/sh
 
 install() {
+    call_func_if_exists "pre_install"
+
     copy_files "$dev_bin_dir" "$sys_bin_dir"
     copy_files "$dev_lib_dir" "$sys_lib_dir"
     copy_files "$dev_share_dir" "$sys_share_dir"
     copy_files "$dev_init_dir" "$sys_init_dir"
     copy_files "$dev_etc_dir" "$sys_etc_dir"
+
+    call_func_if_exists "post_install"
     echo "Done"
 }
 
@@ -65,11 +69,15 @@ create_dir() {
 }
 
 uninstall() {
+    call_func_if_exists "pre_uninstall"
+
     remove_files "$dev_bin_dir" "$sys_bin_dir"
     remove_files "$dev_lib_dir" "$sys_lib_dir"
     remove_files "$dev_share_dir" "$sys_share_dir"
     remove_files "$dev_init_dir" "$sys_init_dir"
     # Avoid removing files in sys_conf_dir and preserve relative administration efforts
+
+    call_func_if_exists "post_uninstall"
     echo "Done"
 }
 
@@ -121,6 +129,20 @@ for_each_child_dir() {
     done
 }
 
+call_func_if_exists() {
+    local func="$1"
+
+    if func_exists "$func"; then
+        "$func"
+    fi
+}
+
+func_exists() {
+    local func="$1"
+
+    type "$func" | grep -q -e "$func.*is.*function"
+}
+
 usage() {
     /bin/echo -e "Usage:"
     /bin/echo -e "\tsetup install"
@@ -128,6 +150,11 @@ usage() {
 }
 
 . "/usr/lib/setup-config"
+
+package_file="./package.sh"
+if [ -f "$package_file" ]; then
+    . "$package_file"
+fi
 
 if [ "$#" -ne 1 ]; then
     usage
