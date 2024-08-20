@@ -20,12 +20,17 @@ copy_files() {
     if [ -d "$src_dir" ]; then
         mkdir -p "$dst_dir"
         for_each_child_dir "$src_dir" "$dst_dir" create_dir
-        if [ "$dst_dir" = "$sys_etc_dir" ]; then
+        if [ "$src_dir" = "$dev_etc_dir" ]; then
             for_each_file "$src_dir" "$dst_dir" copy_etc_file
         else
             for_each_file "$src_dir" "$dst_dir" copy_file
-            if [ "$dst_dir" = "$sys_bin_dir" ]; then
+            if [ "$src_dir" = "$dev_bin_dir" ]; then
                 for_each_file "$src_dir" "$dst_dir" make_executable
+            elif [ "$src_dir" = "systemd" ]; then
+                for_each_file "$src_dir" "$dst_dir" enable_systemd
+            elif [ "$src_dir" = "sysvinit" ]; then
+                for_each_file "$src_dir" "$dst_dir" make_executable
+                for_each_file "$src_dir" "$dst_dir" enable_sysvinit
             fi
         fi
     fi
@@ -59,6 +64,20 @@ make_executable() {
     local dst_file="$2"
 
     echo_and_run chmod a+x "$dst_file"
+}
+
+enable_systemd() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    echo_and_run systemctl enable $(basename "$dst_file")
+}
+
+enable_sysvinit() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    echo_and_run "$dst_file" enable
 }
 
 create_dir() {

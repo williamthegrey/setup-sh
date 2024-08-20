@@ -1,13 +1,13 @@
 #!/bin/sh
 
 get_config() {
+    . "/etc/setup.conf"
+
     dev_bin_dir="bin"
     dev_lib_dir="lib"
     dev_share_dir="share"
-    dev_init_dir="init"
+    # dev_init_dir should be system dependent and specified in setup.conf
     dev_etc_dir="etc"
-
-    . "/etc/setup.conf"
 }
 
 get_config

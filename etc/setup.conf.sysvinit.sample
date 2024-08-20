@@ -3,3 +3,5 @@ sys_lib_dir=/usr/lib
 sys_share_dir=/usr/share
 sys_init_dir=/etc/init.d
 sys_etc_dir=/etc
+
+dev_init_dir=sysvinit
