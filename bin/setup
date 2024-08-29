@@ -168,7 +168,7 @@ call_func_if_exists() {
 func_exists() {
     local func="$1"
 
-    type "$func" | grep -q -e "$func.*is.*function"
+    command -v "$func" &> /dev/null
 }
 
 usage() {
