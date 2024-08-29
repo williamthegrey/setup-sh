@@ -2,7 +2,7 @@
 
 export_dev() {
     local script_bin_dir=$(basename "$script_dir")
-    if [ "$script_bin_dir" != "$dev_bin_dir" ]; then
+    if [ "$script_bin_dir" != "$pkg_bin_dir" ]; then
         echo "Error: Projects compatible with Setup.sh should put the entrance scripts in a 'bin' dir"
         exit 1
     fi
@@ -16,18 +16,18 @@ export_dev() {
 }
 
 export_dirs() {
-    BIN_DIR=$(get_dir "$dev_bin_dir" "$sys_bin_dir")
-    LIB_DIR=$(get_dir "$dev_lib_dir" "$sys_lib_dir")
-    SHARE_DIR=$(get_dir "$dev_share_dir" "$sys_share_dir")
-    INIT_DIR=$(get_dir "$dev_init_dir" "$sys_init_dir")
-    ETC_DIR=$(get_dir "$dev_etc_dir" "$sys_etc_dir")
+    BIN_DIR=$(get_dir "$pkg_bin_dir" "$sys_bin_dir")
+    LIB_DIR=$(get_dir "$pkg_lib_dir" "$sys_lib_dir")
+    SHARE_DIR=$(get_dir "$pkg_share_dir" "$sys_share_dir")
+    INIT_DIR=$(get_dir "$pkg_init_dir" "$sys_init_dir")
+    ETC_DIR=$(get_dir "$pkg_etc_dir" "$sys_etc_dir")
 }
 
 get_dir() {
-    local dev_dir="$1"
+    local pkg_dir="$1"
     local sys_dir="$2"
     if [ "$DEV" = true ]; then
-        echo "$base_dir/$dev_dir"
+        echo "$base_dir/$pkg_dir"
     else
         echo "$sys_dir"
     fi

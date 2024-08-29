@@ -1,7 +1,9 @@
+# pkg dirs
+pkg_init_dir=sysvinit
+
+# sys dirs
 sys_bin_dir=/usr/bin
 sys_lib_dir=/usr/lib
 sys_share_dir=/usr/share
 sys_init_dir=/etc/init.d
 sys_etc_dir=/etc
-
-dev_init_dir=sysvinit

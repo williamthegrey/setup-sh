@@ -3,11 +3,11 @@
 install() {
     call_func_if_exists "pre_install"
 
-    copy_files "$dev_bin_dir" "$sys_bin_dir"
-    copy_files "$dev_lib_dir" "$sys_lib_dir"
-    copy_files "$dev_share_dir" "$sys_share_dir"
-    copy_files "$dev_init_dir" "$sys_init_dir"
-    copy_files "$dev_etc_dir" "$sys_etc_dir"
+    copy_files "$pkg_bin_dir" "$sys_bin_dir"
+    copy_files "$pkg_lib_dir" "$sys_lib_dir"
+    copy_files "$pkg_share_dir" "$sys_share_dir"
+    copy_files "$pkg_init_dir" "$sys_init_dir"
+    copy_files "$pkg_etc_dir" "$sys_etc_dir"
 
     call_func_if_exists "post_install"
     echo "Done"
@@ -20,11 +20,11 @@ copy_files() {
     if [ -d "$src_dir" ]; then
         mkdir -p "$dst_dir"
         for_each_child_dir "$src_dir" "$dst_dir" create_dir
-        if [ "$src_dir" = "$dev_etc_dir" ]; then
+        if [ "$src_dir" = "$pkg_etc_dir" ]; then
             for_each_file "$src_dir" "$dst_dir" copy_etc_file
         else
             for_each_file "$src_dir" "$dst_dir" copy_file
-            if [ "$src_dir" = "$dev_bin_dir" ]; then
+            if [ "$src_dir" = "$pkg_bin_dir" ]; then
                 for_each_file "$src_dir" "$dst_dir" make_executable
             elif [ "$src_dir" = "systemd" ]; then
                 for_each_file "$src_dir" "$dst_dir" enable_systemd
@@ -90,10 +90,10 @@ create_dir() {
 uninstall() {
     call_func_if_exists "pre_uninstall"
 
-    remove_files "$dev_bin_dir" "$sys_bin_dir"
-    remove_files "$dev_lib_dir" "$sys_lib_dir"
-    remove_files "$dev_share_dir" "$sys_share_dir"
-    remove_files "$dev_init_dir" "$sys_init_dir"
+    remove_files "$pkg_bin_dir" "$sys_bin_dir"
+    remove_files "$pkg_lib_dir" "$sys_lib_dir"
+    remove_files "$pkg_share_dir" "$sys_share_dir"
+    remove_files "$pkg_init_dir" "$sys_init_dir"
     # Avoid removing files in sys_conf_dir and preserve relative administration efforts
 
     call_func_if_exists "post_uninstall"
