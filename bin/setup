@@ -22,9 +22,15 @@ exit_dir() {
 }
 
 install() {
+    # Check package
+    if [ ! -d "$pkg_dir" ]; then
+        echo "Error: Package directory '$pkg_dir' does not exist"
+        exit 1
+    fi
+
     # Check package in system
     if [ -d "$sys_pkg_dir" ]; then
-        echo "Package $pkg_name has already been installed and will be uninstalled first"
+        echo "Package '$pkg_name' has already been installed and will be uninstalled first"
         uninstall
     fi
 
@@ -128,7 +134,7 @@ create_dir() {
 uninstall() {
     # Check package in system
     if [ ! -d "$sys_pkg_dir" ]; then
-        echo "Error: package $pkg_name has not been installed"
+        echo "Error: package '$pkg_name' has not been installed"
         exit 1
     fi
 
@@ -233,25 +239,26 @@ func_exists() {
 
 usage() {
     /bin/echo -e "Usage:"
-    /bin/echo -e "\tsetup install [--dry-run]"
-    /bin/echo -e "\tsetup uninstall [--dry-run]"
+    /bin/echo -e "\tsetup install package_dir [--dry-run]"
+    /bin/echo -e "\tsetup uninstall package_name [--dry-run]"
+    /bin/echo -e "Arguments:"
+    /bin/echo -e "\tpackage_dir\trelative or absolute path of the package"
+    /bin/echo -e "\tpackage_name\tthe directory name of package_dir"
+    /bin/echo -e "Options:"
+    /bin/echo -e "\t--dry-run\tonly print operations without actually executing them"
 }
 
 . "/usr/lib/setup-config"
 sys_pkgs_dir="$sys_lib_dir/setup-packages"
 
-pkg_dir=$(realpath .)
-pkg_name=$(basename "$pkg_dir")
-sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
-
-if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
     usage
     exit 1
 fi
 
 dry_run=false
-if [ "$#" = 2 ]; then
-    if [ "$2" = "--dry-run" ]; then
+if [ "$#" = 3 ]; then
+    if [ "$3" = "--dry-run" ]; then
         dry_run=true
     else
         usage
@@ -260,8 +267,14 @@ if [ "$#" = 2 ]; then
 fi
 
 if [ "$1" = "install" ]; then
+    pkg_dir="$2"
+    pkg_dir=$(realpath "$pkg_dir")
+    pkg_name=$(basename "$pkg_dir")
+    sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
     install
 elif [ "$1" = "uninstall" ]; then
+    pkg_name="$2"
+    sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
     uninstall
 else
     usage
