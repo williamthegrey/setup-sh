@@ -1,15 +1,23 @@
 #!/bin/sh
 
+enter_pkg_dir() {
+    cd "$pkg_dir"
+    source_pkg_file
+}
+
 enter_sys_pkg_dir() {
     cd "$sys_pkg_dir"
+    source_pkg_file
+}
 
+source_pkg_file() {
     pkg_file="./package.sh"
     if [ -f "$pkg_file" ]; then
         . "$pkg_file"
     fi
 }
 
-exit_sys_pkg_dir() {
+exit_dir() {
     cd - >/dev/null
 }
 
@@ -23,10 +31,12 @@ install() {
     echo "Install: started"
 
     # Copy package to system
-    mkdir -p "$sys_pkgs_dir"
-    cp -r "$pkg_dir" "$sys_pkg_dir"
+    if [ "$dry_run" = false ]; then
+        mkdir -p "$sys_pkgs_dir"
+        cp -r "$pkg_dir" "$sys_pkg_dir"
+    fi
 
-    enter_sys_pkg_dir
+    enter_pkg_dir
     call_func_if_exists "pre_install"
 
     copy_files "$pkg_bin_dir" "$sys_bin_dir"
@@ -36,7 +46,7 @@ install() {
     copy_files "$pkg_etc_dir" "$sys_etc_dir"
 
     call_func_if_exists "post_install"
-    exit_sys_pkg_dir
+    exit_dir
 
     echo "Install: finished"
 }
@@ -134,10 +144,12 @@ uninstall() {
     # Avoid removing files in sys_conf_dir and preserve relative administration efforts
 
     call_func_if_exists "post_uninstall"
-    exit_sys_pkg_dir
+    exit_dir
 
     # Delete package from system
-    rm -rf "$sys_pkg_dir"
+    if [ "$dry_run" = false ]; then
+        rm -rf "$sys_pkg_dir"
+    fi
 
     echo "Uninstall: finished"
 }
