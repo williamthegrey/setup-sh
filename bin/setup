@@ -1,6 +1,32 @@
 #!/bin/sh
 
+enter_sys_pkg_dir() {
+    cd "$sys_pkg_dir"
+
+    pkg_file="./package.sh"
+    if [ -f "$pkg_file" ]; then
+        . "$pkg_file"
+    fi
+}
+
+exit_sys_pkg_dir() {
+    cd - >/dev/null
+}
+
 install() {
+    # Check package in system
+    if [ -d "$sys_pkg_dir" ]; then
+        echo "Package $pkg_name has already been installed and will be uninstalled first"
+        uninstall
+    fi
+
+    echo "Install: started"
+
+    # Copy package to system
+    mkdir -p "$sys_pkgs_dir"
+    cp -r "$pkg_dir" "$sys_pkg_dir"
+
+    enter_sys_pkg_dir
     call_func_if_exists "pre_install"
 
     copy_files "$pkg_bin_dir" "$sys_bin_dir"
@@ -10,7 +36,9 @@ install() {
     copy_files "$pkg_etc_dir" "$sys_etc_dir"
 
     call_func_if_exists "post_install"
-    echo "Done"
+    exit_sys_pkg_dir
+
+    echo "Install: finished"
 }
 
 copy_files() {
@@ -88,6 +116,15 @@ create_dir() {
 }
 
 uninstall() {
+    # Check package in system
+    if [ ! -d "$sys_pkg_dir" ]; then
+        echo "Error: package $pkg_name has not been installed"
+        exit 1
+    fi
+
+    echo "Uninstall: started"
+
+    enter_sys_pkg_dir
     call_func_if_exists "pre_uninstall"
 
     remove_files "$pkg_bin_dir" "$sys_bin_dir"
@@ -97,7 +134,12 @@ uninstall() {
     # Avoid removing files in sys_conf_dir and preserve relative administration efforts
 
     call_func_if_exists "post_uninstall"
-    echo "Done"
+    exit_sys_pkg_dir
+
+    # Delete package from system
+    rm -rf "$sys_pkg_dir"
+
+    echo "Uninstall: finished"
 }
 
 remove_files() {
@@ -184,11 +226,11 @@ usage() {
 }
 
 . "/usr/lib/setup-config"
+sys_pkgs_dir="$sys_lib_dir/setup-packages"
 
-package_file="./package.sh"
-if [ -f "$package_file" ]; then
-    . "$package_file"
-fi
+pkg_dir=$(realpath .)
+pkg_name=$(basename "$pkg_dir")
+sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
     usage
