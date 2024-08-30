@@ -181,7 +181,8 @@ remove_dir() {
     local src_dir="$1"
     local dst_dir="$2"
 
-    if [ -z $(ls -A "$dst_dir") ]; then
+    local result=$(ls -A "$dst_dir")
+    if [ -z "$result" ]; then
         echo_and_run rm -rf "$dst_dir"
     fi
 }
