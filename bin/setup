@@ -237,10 +237,20 @@ func_exists() {
     fi
 }
 
+list_installed() {
+    ls -1 "$sys_pkgs_dir"
+}
+
+exit_with_usage() {
+    usage
+    exit 1
+}
+
 usage() {
     /bin/echo -e "Usage:"
     /bin/echo -e "\tsetup install package_dir [--dry-run]"
     /bin/echo -e "\tsetup uninstall package_name [--dry-run]"
+    /bin/echo -e "\tsetup list-installed"
     /bin/echo -e "Arguments:"
     /bin/echo -e "\tpackage_dir\trelative or absolute path of the package"
     /bin/echo -e "\tpackage_name\tthe directory name of package_dir"
@@ -248,35 +258,44 @@ usage() {
     /bin/echo -e "\t--dry-run\tonly print operations without actually executing them"
 }
 
+parse_setup_args() {
+    sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
+
+    if [ "$#" -lt 2 ]; then
+        exit_with_usage
+    fi
+    dry_run=false
+    if [ "$#" = 3 ]; then
+        if [ "$3" = "--dry-run" ]; then
+            dry_run=true
+        else
+            exit_with_usage
+        fi
+    fi
+}
+
 . "/usr/lib/setup-config"
 sys_pkgs_dir="$sys_lib_dir/setup-packages"
 
-if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
-    usage
-    exit 1
-fi
-
-dry_run=false
-if [ "$#" = 3 ]; then
-    if [ "$3" = "--dry-run" ]; then
-        dry_run=true
-    else
-        usage
-        exit 1
-    fi
+if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
+    exit_with_usage
 fi
 
 if [ "$1" = "install" ]; then
     pkg_dir="$2"
     pkg_dir=$(realpath "$pkg_dir")
     pkg_name=$(basename "$pkg_dir")
-    sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
+    parse_setup_args "$@"
     install
 elif [ "$1" = "uninstall" ]; then
     pkg_name="$2"
-    sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
+    parse_setup_args "$@"
     uninstall
+elif [ "$1" = "list-installed" ]; then
+    if [ "$#" != 1 ]; then
+        exit_with_usage
+    fi
+    list_installed
 else
-    usage
-    exit 1
+    exit_with_usage
 fi
