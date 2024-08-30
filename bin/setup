@@ -160,7 +160,8 @@ for_each_child_dir() {
 call_func_if_exists() {
     local func="$1"
 
-    if func_exists "$func"; then
+    local exists=$(func_exists "$func")
+    if [ $exists = true ]; then
         echo_and_run "$func"
     fi
 }
@@ -168,7 +169,12 @@ call_func_if_exists() {
 func_exists() {
     local func="$1"
 
-    command -v "$func" &> /dev/null
+    local result=$(command -v "$func")
+    if [ -z "$result" ]; then
+        echo false
+    else
+        echo true
+    fi
 }
 
 usage() {
