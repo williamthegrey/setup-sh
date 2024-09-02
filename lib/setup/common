@@ -1,3 +1,21 @@
 #!/bin/sh
 
 setup_version=1.0.0
+
+echo_and_run() {
+    local command="$@"
+
+    echo "$command"
+    if [ "$dry_run" = false ]; then
+        $command
+    fi
+}
+
+print_setup_version() {
+    echo "$setup_version"
+}
+
+exit_with_usage() {
+    usage
+    exit 1
+}

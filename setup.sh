@@ -44,25 +44,17 @@ uninstall() {
     echo "Uninstall: finished"
 }
 
-echo_and_run() {
-    local command="$@"
-
-    echo "$command"
-    $command
-}
-
-exit_with_usage() {
-    usage
-    exit 1
-}
-
 usage() {
     /bin/echo -e "Usage:"
     /bin/echo -e "\t./setup.sh install <init_system>"
     /bin/echo -e "\t./setup.sh uninstall"
+    /bin/echo -e "\t./setup.sh version"
     /bin/echo -e "Arguments:"
     /bin/echo -e "\tinit_system\tthe value be systemd or sysvinit"
 }
+
+. "lib/setup/common"
+dry_run=false
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
     exit_with_usage
@@ -75,6 +67,8 @@ elif [ "$1" = "install" ]; then
     fi
 elif [ "$1" = "uninstall" ] && [ "$2" = "" ]; then
     uninstall
+elif [ "$1" = "version" ]; then
+    print_setup_version
 else
     exit_with_usage
 fi

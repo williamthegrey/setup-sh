@@ -193,15 +193,6 @@ remove_dir() {
     fi
 }
 
-echo_and_run() {
-    local command="$@"
-
-    echo "$command"
-    if [ "$dry_run" = false ]; then
-        $command
-    fi
-}
-
 for_each_file() {
     local src_dir="$1"
     local dst_dir="$2"
@@ -252,15 +243,6 @@ list_installed() {
         echo "$pkg_name $version"
         exit_pkg_dir
     done
-}
-
-print_setup_version() {
-    echo "$setup_version"
-}
-
-exit_with_usage() {
-    usage
-    exit 1
 }
 
 usage() {
