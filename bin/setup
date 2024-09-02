@@ -1,12 +1,9 @@
 #!/bin/sh
 
 enter_pkg_dir() {
-    cd "$pkg_dir"
-    source_pkg_file
-}
+    local pkg_dir="$1"
 
-enter_sys_pkg_dir() {
-    cd "$sys_pkg_dir"
+    cd "$pkg_dir"
     source_pkg_file
 }
 
@@ -17,12 +14,13 @@ source_pkg_file() {
     fi
 }
 
-exit_dir() {
+exit_pkg_dir() {
     unsource_pkg_file
     cd - >/dev/null
 }
 
 unsource_pkg_file() {
+    unset version
     unset -f pre_install
     unset -f post_install
     unset -f pre_uninstall
@@ -50,7 +48,7 @@ install() {
         cp -r "$pkg_dir" "$sys_pkg_dir"
     fi
 
-    enter_pkg_dir
+    enter_pkg_dir "$pkg_dir"
     call_func_if_exists "pre_install"
 
     copy_files "$pkg_bin_dir" "$sys_bin_dir"
@@ -60,7 +58,7 @@ install() {
     copy_files "$pkg_etc_dir" "$sys_etc_dir"
 
     call_func_if_exists "post_install"
-    exit_dir
+    exit_pkg_dir
 
     echo "Install: finished"
 }
@@ -148,7 +146,7 @@ uninstall() {
 
     echo "Uninstall: started"
 
-    enter_sys_pkg_dir
+    enter_pkg_dir "$sys_pkg_dir"
     call_func_if_exists "pre_uninstall"
 
     remove_files "$pkg_bin_dir" "$sys_bin_dir"
@@ -158,7 +156,7 @@ uninstall() {
     # Avoid removing files in sys_conf_dir and preserve relative administration efforts
 
     call_func_if_exists "post_uninstall"
-    exit_dir
+    exit_pkg_dir
 
     # Delete package from system
     if [ "$dry_run" = false ]; then
@@ -248,7 +246,12 @@ func_exists() {
 
 list_installed() {
     mkdir -p "$sys_pkgs_dir"
-    ls -1 "$sys_pkgs_dir"
+    for pkg_dir in "$sys_pkgs_dir"/*; do
+        local pkg_name=$(basename "$pkg_dir")
+        enter_pkg_dir "$pkg_dir"
+        echo "$pkg_name $version"
+        exit_pkg_dir
+    done
 }
 
 exit_with_usage() {
