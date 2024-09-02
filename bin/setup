@@ -239,6 +239,7 @@ func_exists() {
 }
 
 list_installed() {
+    mkdir -p "$sys_pkgs_dir"
     ls -1 "$sys_pkgs_dir"
 }
 
@@ -275,8 +276,8 @@ parse_setup_args() {
     fi
 }
 
-. "/usr/lib/setup-config"
-sys_pkgs_dir="$sys_lib_dir/setup-packages"
+. "/usr/lib/setup/config"
+sys_pkgs_dir="/usr/lib/setup/packages"
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
     exit_with_usage

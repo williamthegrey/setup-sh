@@ -64,7 +64,7 @@ sudo setup install package --dry-run
 You can list all packages installed by Setup.sh with:
 
 ```shell
-setup list-installed
+sudo setup list-installed
 ```
 
 You can uninstall the package with:

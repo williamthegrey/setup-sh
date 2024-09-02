@@ -6,7 +6,8 @@ install() {
     cp bin/setup-env /usr/bin/setup-env
     chmod a+x /usr/bin/setup-env
 
-    cp lib/setup-config /usr/lib/setup-config
+    mkdir -p /usr/lib/setup
+    cp lib/setup/config /usr/lib/setup/config
 
     if [ ! -f /etc/setup.conf ]; then
         if [ "$init_system" = "systemd" ]; then
@@ -23,7 +24,7 @@ uninstall() {
     rm -f /usr/bin/setup
     rm -f /usr/bin/setup-env
 
-    rm -f /usr/lib/setup-config
+    rm -f /usr/lib/setup/config
 
     # Avoid removing /etc/setup.conf and preserve relative administration efforts
 
