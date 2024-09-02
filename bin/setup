@@ -254,6 +254,10 @@ list_installed() {
     done
 }
 
+print_setup_version() {
+    echo "$setup_version"
+}
+
 exit_with_usage() {
     usage
     exit 1
@@ -264,6 +268,7 @@ usage() {
     /bin/echo -e "\tsetup install package_dir [--dry-run]"
     /bin/echo -e "\tsetup uninstall package_name [--dry-run]"
     /bin/echo -e "\tsetup list-installed"
+    /bin/echo -e "\tsetup version"
     /bin/echo -e "Arguments:"
     /bin/echo -e "\tpackage_dir\trelative or absolute path of the package"
     /bin/echo -e "\tpackage_name\tthe directory name of package_dir"
@@ -287,6 +292,7 @@ parse_setup_args() {
     fi
 }
 
+. "/usr/lib/setup/common"
 . "/usr/lib/setup/config"
 sys_pkgs_dir="/usr/lib/setup/packages"
 
@@ -309,6 +315,11 @@ elif [ "$1" = "list-installed" ]; then
         exit_with_usage
     fi
     list_installed
+elif [ "$1" = "version" ]; then
+    if [ "$#" != 1 ]; then
+        exit_with_usage
+    fi
+    print_setup_version
 else
     exit_with_usage
 fi

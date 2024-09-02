@@ -43,7 +43,7 @@ sys_init_dir=/etc/init.d
 sys_etc_dir=/etc
 ```
 
-You can modify "sys dirs" to adjust the installation destinations of the packages which are about to be installed by Setup.sh. And you can modify "pkg dirs" to let Setup.sh know which directories in your packages are meant to be installed to system. But only modifying pkg_init_dir is recommended, while the rest of "pkg dirs" should be decided by Setup.sh for the consistency across all packages.
+You can modify "sys dirs" to adjust the installation destinations of the packages which are about to be installed by Setup.sh. And you can modify "pkg dirs" to let Setup.sh know which directories in your packages are meant to be installed to system. But only modifying pkg_init_dir is allowed, while the rest of "pkg dirs" is specified by Setup.sh internally.
 
 Warning: Do not modify these configurations frequently. When Setup.sh uninstalls packages, it always uses currently configured "sys dirs". If a package was installed to old "sys dirs", some files will not be deleted cleanly during uninstallation.
 

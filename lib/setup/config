@@ -1,13 +1,13 @@
 #!/bin/sh
 
 get_config() {
+    . "/etc/setup.conf"
+
     pkg_bin_dir="bin"
     pkg_lib_dir="lib"
     pkg_share_dir="share"
     # pkg_init_dir should be system dependent and specified in setup.conf
     pkg_etc_dir="etc"
-
-    . "/etc/setup.conf"
 }
 
 get_config

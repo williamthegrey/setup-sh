@@ -9,6 +9,7 @@ install() {
     echo_and_run chmod a+x /usr/bin/setup-env
 
     echo_and_run mkdir -p /usr/lib/setup
+    echo_and_run cp lib/setup/common /usr/lib/setup/common
     echo_and_run cp lib/setup/config /usr/lib/setup/config
 
     if [ ! -f /etc/setup.conf ]; then
@@ -35,6 +36,7 @@ uninstall() {
     echo_and_run rm -f /usr/bin/setup
     echo_and_run rm -f /usr/bin/setup-env
 
+    echo_and_run rm -f /usr/lib/setup/common
     echo_and_run rm -f /usr/lib/setup/config
 
     # Avoid removing /etc/setup.conf and preserve relative administration efforts
