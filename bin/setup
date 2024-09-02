@@ -13,12 +13,20 @@ enter_sys_pkg_dir() {
 source_pkg_file() {
     pkg_file="./package.sh"
     if [ -f "$pkg_file" ]; then
-        . "$pkg_file"
+        . "$pkg_file" >/dev/null 2>&1
     fi
 }
 
 exit_dir() {
+    unsource_pkg_file
     cd - >/dev/null
+}
+
+unsource_pkg_file() {
+    unset -f pre_install
+    unset -f post_install
+    unset -f pre_uninstall
+    unset -f post_uninstall
 }
 
 install() {
