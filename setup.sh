@@ -23,6 +23,13 @@ install() {
 }
 
 uninstall() {
+    # Check packages in system
+    local packages=$(ls -1 /usr/lib/setup/packages)
+    if [ ! -z "$packages" ]; then
+        echo "Error: Cannot uninstall Setup.sh before uninstalling all of the packages."
+        exit 1
+    fi
+
     echo "Uninstall: started"
 
     echo_and_run rm -f /usr/bin/setup

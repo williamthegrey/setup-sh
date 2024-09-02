@@ -78,3 +78,14 @@ Of course, you can use dry-run mode before actually uninstalling with:
 ```shell
 sudo setup uninstall package --dry-run
 ```
+
+## Uninstallation
+
+In order to uninstall Setup.sh, you should uninstall all of the packages first. Because packages might be using setup-env to implement dev mode, and if you uninstall Setup.sh, setup-env will become unavailable, and those packages will not work properly. Since we do not know which packages are using setup-env, So it is unrecommended to uninstall Setup.sh before uninstalling all of the packages. And this uninstallation operation has been prohibited in "setup.sh" script.
+
+After uninstalling all of the packages, uninstall Setup.sh with:
+
+```shell
+cd setup-sh
+sudo ./setup.sh uninstall
+```
