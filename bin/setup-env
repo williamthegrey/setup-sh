@@ -8,9 +8,12 @@ export_dev() {
     fi
 
     if [ "$script_dir" = "$sys_bin_dir" ]; then
+        if [ ! -z "$pkg_name" ]; then
+            pkg_base_dir="$sys_pkgs_dir/$pkg_name"
+        fi
         DEV=false
     else
-        base_dir=$(dirname "$script_dir")
+        pkg_base_dir=$(dirname "$script_dir")
         DEV=true
     fi
 }
@@ -27,12 +30,20 @@ get_dir() {
     local pkg_dir="$1"
     local sys_dir="$2"
     if [ "$DEV" = true ]; then
-        echo "$base_dir/$pkg_dir"
+        echo "$pkg_base_dir/$pkg_dir"
     else
         echo "$sys_dir"
     fi
 }
 
+export_info() {
+    if [ ! -z "$pkg_base_dir" ]; then
+        enter_pkg_dir "$pkg_base_dir"
+        exit_dir
+    fi
+}
+
+. "/usr/lib/setup/common"
 . "/usr/lib/setup/config"
 
 script=$(realpath "$0")
@@ -40,3 +51,4 @@ script_dir=$(dirname "$script")
 
 export_dev
 export_dirs
+export_info

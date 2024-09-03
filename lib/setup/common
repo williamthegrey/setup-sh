@@ -1,6 +1,38 @@
 #!/bin/sh
 
 setup_version=1.0.0
+sys_pkgs_dir="/usr/lib/setup/packages"
+
+enter_pkg_dir() {
+    local pkg_dir="$1"
+
+    cd "$pkg_dir"
+    source_pkg_file
+}
+
+source_pkg_file() {
+    pkg_file="./package.sh"
+    if [ -f "$pkg_file" ]; then
+        . "$pkg_file" >/dev/null 2>&1
+    fi
+}
+
+exit_pkg_dir() {
+    unsource_pkg_file
+    exit_dir
+}
+
+exit_dir() {
+    cd - >/dev/null
+}
+
+unsource_pkg_file() {
+    unset VERSION
+    unset -f pre_install
+    unset -f post_install
+    unset -f pre_uninstall
+    unset -f post_uninstall
+}
 
 echo_and_run() {
     local command="$@"

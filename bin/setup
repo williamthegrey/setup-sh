@@ -1,32 +1,5 @@
 #!/bin/sh
 
-enter_pkg_dir() {
-    local pkg_dir="$1"
-
-    cd "$pkg_dir"
-    source_pkg_file
-}
-
-source_pkg_file() {
-    pkg_file="./package.sh"
-    if [ -f "$pkg_file" ]; then
-        . "$pkg_file" >/dev/null 2>&1
-    fi
-}
-
-exit_pkg_dir() {
-    unsource_pkg_file
-    cd - >/dev/null
-}
-
-unsource_pkg_file() {
-    unset version
-    unset -f pre_install
-    unset -f post_install
-    unset -f pre_uninstall
-    unset -f post_uninstall
-}
-
 install() {
     # Check package
     if [ ! -d "$pkg_dir" ]; then
@@ -240,7 +213,7 @@ list_installed() {
     for pkg_dir in "$sys_pkgs_dir"/*; do
         local pkg_name=$(basename "$pkg_dir")
         enter_pkg_dir "$pkg_dir"
-        echo "$pkg_name $version"
+        echo "$pkg_name $VERSION"
         exit_pkg_dir
     done
 }
@@ -276,7 +249,6 @@ parse_setup_args() {
 
 . "/usr/lib/setup/common"
 . "/usr/lib/setup/config"
-sys_pkgs_dir="/usr/lib/setup/packages"
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
     exit_with_usage
