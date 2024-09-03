@@ -10,7 +10,7 @@ install() {
 
     echo_and_run mkdir -p /usr/lib/setup
     echo_and_run cp lib/setup/common /usr/lib/setup/common
-    echo_and_run cp lib/setup/config /usr/lib/setup/config
+    echo_and_run cp lib/setup/info /usr/lib/setup/info
 
     if [ ! -f /etc/setup.conf ]; then
         if [ "$init_system" = "systemd" ]; then
@@ -37,7 +37,7 @@ uninstall() {
     echo_and_run rm -f /usr/bin/setup-env
 
     echo_and_run rm -f /usr/lib/setup/common
-    echo_and_run rm -f /usr/lib/setup/config
+    echo_and_run rm -f /usr/lib/setup/info
 
     # Avoid removing /etc/setup.conf and preserve relative administration efforts
 
@@ -54,6 +54,7 @@ usage() {
 }
 
 . "lib/setup/common"
+. "lib/setup/info"
 dry_run=false
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then

@@ -1,6 +1,11 @@
 #!/bin/sh
 
-setup_version=1.0.0
+pkg_bin_dir="bin"
+pkg_lib_dir="lib"
+pkg_share_dir="share"
+# pkg_init_dir should be system dependent and specified in setup.conf
+pkg_etc_dir="etc"
+
 sys_pkgs_dir="/usr/lib/setup/packages"
 
 enter_pkg_dir() {

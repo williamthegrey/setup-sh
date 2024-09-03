@@ -247,8 +247,9 @@ parse_setup_args() {
     fi
 }
 
+. "/etc/setup.conf"
 . "/usr/lib/setup/common"
-. "/usr/lib/setup/config"
+. "/usr/lib/setup/info"
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
     exit_with_usage

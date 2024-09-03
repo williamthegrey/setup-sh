@@ -43,8 +43,8 @@ export_info() {
     fi
 }
 
+. "/etc/setup.conf"
 . "/usr/lib/setup/common"
-. "/usr/lib/setup/config"
 
 script=$(realpath "$0")
 script_dir=$(dirname "$script")
