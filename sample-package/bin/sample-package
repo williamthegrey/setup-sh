@@ -1,0 +1,44 @@
+#!/bin/sh
+
+pkg_name="sample-package"
+. setup-env
+
+echo "# Setup.sh Config"
+echo "pkg_bin_dir=$pkg_bin_dir"
+echo "pkg_lib_dir=$pkg_lib_dir"
+echo "pkg_share_dir=$pkg_share_dir"
+echo "pkg_init_dir=$pkg_init_dir"
+echo "pkg_etc_dir=$pkg_etc_dir"
+echo "sys_bin_dir=$sys_bin_dir"
+echo "sys_lib_dir=$sys_lib_dir"
+echo "sys_share_dir=$sys_share_dir"
+echo "sys_init_dir=$sys_init_dir"
+echo "sys_etc_dir=$sys_etc_dir"
+echo ""
+
+echo "# Package Env"
+echo "DEV=$DEV"
+echo "BIN_DIR=$BIN_DIR"
+echo "LIB_DIR=$LIB_DIR"
+echo "SHARE_DIR=$SHARE_DIR"
+echo "INIT_DIR=$INIT_DIR"
+echo "ETC_DIR=$ETC_DIR"
+echo ""
+
+echo "# Package Info"
+echo "VERSION=$VERSION"
+echo "CUSTOM_INFO=$CUSTOM_INFO"
+echo ""
+
+. "$ETC_DIR/sample-package.conf"
+
+echo "# Package Config"
+echo "sample_conf=$sample_conf"
+echo ""
+
+if [ "$1" = "--daemon" ]; then
+    echo "# Daemon started"
+    while true; do
+        sleep 60
+    done
+fi

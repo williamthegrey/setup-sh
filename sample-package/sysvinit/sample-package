@@ -1,0 +1,20 @@
+#!/bin/sh
+
+PIDFILE="/var/run/sample-package.pid"
+
+case "$1" in
+start)
+    /usr/bin/sample-package --daemon &
+    echo "$!" >$PIDFILE
+    ;;
+stop)
+    PID=$(cat $PIDFILE)
+    PGID=$(ps -o pgid= -p $PID)
+    pkill -g $PGID
+    rm $PIDFILE
+    ;;
+*)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+    ;;
+esac

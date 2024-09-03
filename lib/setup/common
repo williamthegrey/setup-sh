@@ -103,7 +103,7 @@ enable_sysvinit() {
     local src_file="$1"
     local dst_file="$2"
 
-    echo_and_run "$dst_file" enable
+    echo_and_run update-rc.d $(basename "$dst_file") defaults
 }
 
 create_dir() {
