@@ -18,13 +18,14 @@ Currently Setup.sh supports the following init systems:
 
 - systemd
 - sysvinit
+- procd
 
-You should find out which one your system is using and install Setup.sh with (suppose your init system is sysvinit):
+You should find out which one your system is using and install Setup.sh with (suppose your init system is systemd):
 
 ```shell
 git clone https://github.com/williamthegrey/setup-sh.git
 cd setup-sh
-sudo ./setup.sh install sysvinit # Change sysvinit to your actual init system
+sudo ./setup.sh install systemd # Change "systemd" to your actual init system
 ```
 
 ## Configuration

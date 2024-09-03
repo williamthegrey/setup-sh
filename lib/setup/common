@@ -57,6 +57,9 @@ copy_files() {
             elif [ "$src_dir" = "sysvinit" ]; then
                 for_each_file "$src_dir" "$dst_dir" make_executable
                 for_each_file "$src_dir" "$dst_dir" enable_sysvinit
+            elif [ "$src_dir" = "procd" ]; then
+                for_each_file "$src_dir" "$dst_dir" make_executable
+                for_each_file "$src_dir" "$dst_dir" enable_procd
             fi
         fi
     fi
@@ -104,6 +107,13 @@ enable_sysvinit() {
     local dst_file="$2"
 
     echo_and_run update-rc.d $(basename "$dst_file") defaults
+}
+
+enable_procd() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    echo_and_run "$dst_file" enable
 }
 
 create_dir() {

@@ -19,6 +19,8 @@ pre_install() {
         SYS_INIT_DIR="/lib/systemd/system"
     elif [ "$init_system" = "sysvinit" ]; then
         SYS_INIT_DIR="/etc/init.d"
+    elif [ "$init_system" = "procd" ]; then
+        SYS_INIT_DIR="/etc/init.d"
     fi
     sed \
         -e "s;{PKG_INIT_DIR};$PKG_INIT_DIR;g" \
@@ -51,7 +53,7 @@ usage() {
     /bin/echo -e "\t./setup.sh uninstall"
     /bin/echo -e "\t./setup.sh version"
     /bin/echo -e "Arguments:"
-    /bin/echo -e "\tinit_system\tthe value be systemd or sysvinit"
+    /bin/echo -e "\tinit_system\tthe value can be: systemd|sysvinit|procd"
 }
 
 sys_bin_dir=/usr/bin
@@ -67,7 +69,7 @@ dry_run=false
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
     exit_with_usage
 elif [ "$1" = "install" ]; then
-    if [ "$2" = "systemd" ] || [ "$2" = "sysvinit" ]; then
+    if [ "$2" = "systemd" ] || [ "$2" = "sysvinit" ] || [ "$2" = "procd" ]; then
         init_system="$2"
         install
     else
