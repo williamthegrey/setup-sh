@@ -1,2 +1,4 @@
+etc/*.conf
+etc/*.sample
 .vscode/sftp.json
 tmp

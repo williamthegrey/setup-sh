@@ -39,6 +39,107 @@ unsource_pkg_file() {
     unset -f post_uninstall
 }
 
+copy_files() {
+    local src_dir="$1"
+    local dst_dir="$2"
+
+    if [ -d "$src_dir" ]; then
+        mkdir -p "$dst_dir"
+        for_each_child_dir "$src_dir" "$dst_dir" create_dir
+        if [ "$src_dir" = "$pkg_etc_dir" ]; then
+            for_each_file "$src_dir" "$dst_dir" copy_etc_file
+        else
+            for_each_file "$src_dir" "$dst_dir" copy_file
+            if [ "$src_dir" = "$pkg_bin_dir" ]; then
+                for_each_file "$src_dir" "$dst_dir" make_executable
+            elif [ "$src_dir" = "systemd" ]; then
+                for_each_file "$src_dir" "$dst_dir" enable_systemd
+            elif [ "$src_dir" = "sysvinit" ]; then
+                for_each_file "$src_dir" "$dst_dir" make_executable
+                for_each_file "$src_dir" "$dst_dir" enable_sysvinit
+            fi
+        fi
+    fi
+}
+
+copy_file() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    echo_and_run cp "$src_file" "$dst_file"
+}
+
+copy_etc_file() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    # When two $src_file are almost the same except for one of them has a '.sample' extension
+    # Only copy the one with the '.sample' extension
+    if [ ! -f "$src_file.sample" ]; then
+        # Remove the '.sample' extension when copying
+        local final_dst_file="${dst_file%.sample}"
+        # Avoid overwriting $final_dst_file from previous installation
+        if [ ! -f "$final_dst_file" ]; then
+            echo_and_run cp "$src_file" "$final_dst_file"
+        fi
+    fi
+}
+
+make_executable() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    echo_and_run chmod a+x "$dst_file"
+}
+
+enable_systemd() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    echo_and_run systemctl enable $(basename "$dst_file")
+}
+
+enable_sysvinit() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    echo_and_run "$dst_file" enable
+}
+
+create_dir() {
+    local src_dir="$1"
+    local dst_dir="$2"
+
+    echo_and_run mkdir -p "$dst_dir"
+}
+
+remove_files() {
+    local src_dir="$1"
+    local dst_dir="$2"
+
+    if [ -d "$src_dir" ]; then
+        for_each_file "$src_dir" "$dst_dir" remove_file
+        for_each_child_dir "$src_dir" "$dst_dir" remove_dir
+    fi
+}
+
+remove_file() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    echo_and_run rm -f "$dst_file"
+}
+
+remove_dir() {
+    local src_dir="$1"
+    local dst_dir="$2"
+
+    local result=$(ls -A "$dst_dir")
+    if [ -z "$result" ]; then
+        echo_and_run rm -rf "$dst_dir"
+    fi
+}
+
 echo_and_run() {
     local command="$@"
 
@@ -46,6 +147,28 @@ echo_and_run() {
     if [ "$dry_run" = false ]; then
         $command
     fi
+}
+
+for_each_file() {
+    local src_dir="$1"
+    local dst_dir="$2"
+    local func="$3"
+
+    find "$src_dir" -type f | while read src_file; do
+        local dst_file="$dst_dir/${src_file#*/}"
+        "$func" "$src_file" "$dst_file"
+    done
+}
+
+for_each_child_dir() {
+    local src_dir="$1"
+    local dst_dir="$2"
+    local func="$3"
+
+    find "$src_dir" -type d -path "$src_dir/*" | while read src_child_dir; do
+        local dst_child_dir="$dst_dir/${src_child_dir#*/}"
+        "$func" "$src_child_dir" "$dst_child_dir"
+    done
 }
 
 print_setup_version() {

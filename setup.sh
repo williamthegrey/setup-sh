@@ -1,26 +1,30 @@
 #!/bin/sh
 
 install() {
+    pre_install
+
     echo "Install: started"
 
-    echo_and_run cp bin/setup /usr/bin/setup
-    echo_and_run chmod a+x /usr/bin/setup
-    echo_and_run cp bin/setup-env /usr/bin/setup-env
-    echo_and_run chmod a+x /usr/bin/setup-env
-
-    echo_and_run mkdir -p /usr/lib/setup
-    echo_and_run cp lib/setup/common /usr/lib/setup/common
-    echo_and_run cp lib/setup/info /usr/lib/setup/info
-
-    if [ ! -f /etc/setup.conf ]; then
-        if [ "$init_system" = "systemd" ]; then
-            echo_and_run cp etc/setup.conf.systemd.sample /etc/setup.conf
-        elif [ "$init_system" = "sysvinit" ]; then
-            echo_and_run cp etc/setup.conf.sysvinit.sample /etc/setup.conf
-        fi
-    fi
+    copy_files "$pkg_bin_dir" "$sys_bin_dir"
+    copy_files "$pkg_lib_dir" "$sys_lib_dir"
+    copy_files "$pkg_share_dir" "$sys_share_dir"
+    copy_files "$pkg_etc_dir" "$sys_etc_dir"
 
     echo "Install: finished"
+}
+
+pre_install() {
+    PKG_INIT_DIR="$init_system"
+    if [ "$init_system" = "systemd" ]; then
+        SYS_INIT_DIR="/lib/systemd/system"
+    elif [ "$init_system" = "sysvinit" ]; then
+        SYS_INIT_DIR="/etc/init.d"
+    fi
+    sed \
+        -e "s;{PKG_INIT_DIR};$PKG_INIT_DIR;g" \
+        -e "s;{SYS_INIT_DIR};$SYS_INIT_DIR;g" \
+        "template/setup.conf.sample" \
+        >"etc/setup.conf.sample"
 }
 
 uninstall() {
@@ -33,12 +37,9 @@ uninstall() {
 
     echo "Uninstall: started"
 
-    echo_and_run rm -f /usr/bin/setup
-    echo_and_run rm -f /usr/bin/setup-env
-
-    echo_and_run rm -f /usr/lib/setup/common
-    echo_and_run rm -f /usr/lib/setup/info
-
+    remove_files "$pkg_bin_dir" "$sys_bin_dir"
+    remove_files "$pkg_lib_dir" "$sys_lib_dir"
+    remove_files "$pkg_share_dir" "$sys_share_dir"
     # Avoid removing /etc/setup.conf and preserve relative administration efforts
 
     echo "Uninstall: finished"
@@ -53,8 +54,14 @@ usage() {
     /bin/echo -e "\tinit_system\tthe value be systemd or sysvinit"
 }
 
+sys_bin_dir=/usr/bin
+sys_lib_dir=/usr/lib
+sys_share_dir=/usr/share
+sys_etc_dir=/etc
+
 . "lib/setup/common"
 . "lib/setup/info"
+
 dry_run=false
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
