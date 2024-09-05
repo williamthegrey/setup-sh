@@ -22,6 +22,7 @@ pre_install() {
     elif [ "$init_system" = "procd" ]; then
         SYS_INIT_DIR="/etc/init.d"
     fi
+    mkdir -p "$pkg_etc_dir"
     sed \
         -e "s;{PKG_INIT_DIR};$PKG_INIT_DIR;g" \
         -e "s;{SYS_INIT_DIR};$SYS_INIT_DIR;g" \
