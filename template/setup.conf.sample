@@ -7,3 +7,4 @@ sys_lib_dir=/usr/lib
 sys_share_dir=/usr/share
 sys_init_dir={SYS_INIT_DIR}
 sys_etc_dir=/etc
+sys_var_dir=/var

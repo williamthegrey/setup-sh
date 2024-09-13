@@ -24,6 +24,7 @@ export_dirs() {
     SHARE_DIR=$(get_dir "$pkg_share_dir" "$sys_share_dir")
     INIT_DIR=$(get_dir "$pkg_init_dir" "$sys_init_dir")
     ETC_DIR=$(get_dir "$pkg_etc_dir" "$sys_etc_dir")
+    VAR_DIR=$(get_dir "$pkg_var_dir" "$sys_var_dir")
 }
 
 get_dir() {

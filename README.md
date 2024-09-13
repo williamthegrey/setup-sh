@@ -43,9 +43,15 @@ sys_lib_dir=/usr/lib
 sys_share_dir=/usr/share
 sys_init_dir=/etc/init.d
 sys_etc_dir=/etc
+sys_var_dir=/var
 ```
 
-Setup.sh is meant to install packages to your system. You can modify "sys dirs" to adjust the installation destinations of the packages. And you can modify "pkg dirs" to let Setup.sh know which directories in your packages are meant to be installed to system. But only modifying pkg_init_dir is allowed, while the rest of "pkg dirs" is specified by Setup.sh internally.
+Setup.sh is meant to install packages to your system. "sys dirs" are the installation destinations of the packages. While "pkg dirs" are the directories in your packages meant to be installed to system.
+
+> [!NOTE]
+> Setup.sh will not install any files from pkg_var_dir to sys_var_dir. Because var dirs are used to store run-time variable data, which does not belong to packages.
+
+You can modify "sys dirs" and "pkg dirs" as needed. But among "pkg dirs", only pkg_init_dir can be modified, while the rest of "pkg dirs" is specified by Setup.sh internally.
 
 > [!WARNING]
 > Do not modify these configurations frequently. When Setup.sh uninstalls packages, it always uses currently configured "sys dirs". If a package was installed to old "sys dirs", and uninstalled from new "sys dirs", some files will not be deleted cleanly during uninstallation.
