@@ -3,12 +3,17 @@
 pkg_name="sample-package"
 . setup-env
 
+echo "# Setup.sh Compile Options"
+echo "sys_root_dir=$sys_root_dir"
+echo ""
+
 echo "# Setup.sh Config"
 echo "pkg_bin_dir=$pkg_bin_dir"
 echo "pkg_lib_dir=$pkg_lib_dir"
 echo "pkg_share_dir=$pkg_share_dir"
 echo "pkg_init_dir=$pkg_init_dir"
 echo "pkg_etc_dir=$pkg_etc_dir"
+echo "pkg_var_dir=$pkg_var_dir"
 echo "sys_bin_dir=$sys_bin_dir"
 echo "sys_lib_dir=$sys_lib_dir"
 echo "sys_share_dir=$sys_share_dir"

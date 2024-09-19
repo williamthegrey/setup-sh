@@ -7,8 +7,6 @@ pkg_share_dir="share"
 pkg_etc_dir="etc"
 pkg_var_dir="var"
 
-sys_pkgs_dir="/usr/lib/setup/packages"
-
 enter_pkg_dir() {
     local pkg_dir="$1"
 
@@ -184,6 +182,25 @@ for_each_child_dir() {
 
 print_setup_version() {
     echo "$setup_version"
+}
+
+require_args() {
+    local args_count="$1"
+    local required_args_count="$2"
+
+    if [ "$args_count" -lt "$required_args_count" ]; then
+        echo "Error: Too few args"
+        exit_with_usage
+    fi
+}
+
+refuse_args() {
+    local args_count="$1"
+
+    if [ "$args_count" -gt 0 ]; then
+        echo "Error: Too many args"
+        exit_with_usage
+    fi
 }
 
 exit_with_usage() {

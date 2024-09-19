@@ -124,9 +124,11 @@ parse_setup_args() {
     fi
 }
 
-. "/etc/setup.conf"
-. "/usr/lib/setup/common"
-. "/usr/lib/setup/info"
+sys_root_dir="${SYS_ROOT_DIR}"
+. "$sys_root_dir/etc/setup.conf"
+. "$sys_root_dir/usr/lib/setup/common"
+. "$sys_root_dir/usr/lib/setup/info"
+sys_pkgs_dir="$sys_root_dir/usr/lib/setup/packages"
 
 if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
     exit_with_usage

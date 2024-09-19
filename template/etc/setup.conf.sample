@@ -1,0 +1,10 @@
+# pkg dirs
+pkg_init_dir=${PKG_INIT_DIR}
+
+# sys dirs
+sys_bin_dir=${SYS_ROOT_DIR}/usr/bin
+sys_lib_dir=${SYS_ROOT_DIR}/usr/lib
+sys_share_dir=${SYS_ROOT_DIR}/usr/share
+sys_init_dir=${SYS_ROOT_DIR}${SYS_INIT_DIR}
+sys_etc_dir=${SYS_ROOT_DIR}/etc
+sys_var_dir=${SYS_ROOT_DIR}/var
