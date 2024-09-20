@@ -29,6 +29,16 @@ cd setup-sh
 sudo ./setup.sh install systemd
 ```
 
+On some embedded systems, it is impossible to install anything to root dir "/". In this case, you can install Setup.sh to an allowed alternative root dir (like "/opt") with:
+
+```shell
+# Change "sysvinit" to your actual init system
+# Change "/opt" to your actual root dir
+sudo ./setup.sh install sysvinit --root-dir /opt
+```
+
+After that, Add this alternative root dir to your `PATH` variable.
+
 ## Configuration
 
 One you have installed Setup.sh, you will have this "/etc/setup.conf" config file with content like:
@@ -233,4 +243,11 @@ After uninstalling all of the packages, uninstall Setup.sh with:
 ```shell
 cd setup-sh
 sudo ./setup.sh uninstall
+```
+
+If you have installed Setup.sh to an alternative root dir previously, you should uninstall it with:
+
+```shell
+# Change "/opt" to your actual root dir
+sudo ./setup.sh uninstall --root-dir /opt
 ```
