@@ -3,11 +3,12 @@
 export_dev() {
     local script_bin_dir=$(basename "$script_dir")
     if [ "$script_bin_dir" != "$pkg_bin_dir" ]; then
-        echo "Error: Projects compatible with Setup.sh should put the entrance scripts in a 'bin' dir"
+        echo "Error: Projects compatible with Setup.sh should put the entrance scripts in a '$pkg_bin_dir' dir"
         exit 1
     fi
 
-    if [ "$script_dir" = "$sys_bin_dir" ]; then
+    local sys_bin_dir_realpath=$(realpath "$sys_bin_dir")
+    if [ "$script_dir" = "$sys_bin_dir_realpath" ]; then
         if [ ! -z "$pkg_name" ]; then
             pkg_base_dir="$sys_pkgs_dir/$pkg_name"
         fi
