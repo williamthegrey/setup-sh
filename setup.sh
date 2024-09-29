@@ -2,13 +2,25 @@
 
 install() {
     init_sys_dirs
-    pre_install
+
+    # Check package in system
+    if [ -d "$sys_setup_sh_dir" ]; then
+        echo "Setup.sh has already been installed and will be uninstalled first"
+        uninstall --force
+    fi
 
     echo "Install: started"
+
+    # Copy setup-sh to system
+    mkdir -p "$sys_setup_sh_dir"
+    cp -r * "$sys_setup_sh_dir"
+
+    pre_install
 
     copy_files "$pkg_bin_dir" "$sys_bin_dir"
     copy_files "$pkg_lib_dir" "$sys_lib_dir"
     copy_files "$pkg_share_dir" "$sys_share_dir"
+    copy_files "$pkg_init_dir" "$sys_init_dir"
     copy_files "$pkg_etc_dir" "$sys_etc_dir"
 
     echo "Install: finished"
@@ -61,19 +73,36 @@ get_replace_options() {
 
 uninstall() {
     init_sys_dirs
-    # Check packages in system
-    local packages=$(ls -1 "$sys_pkgs_dir")
-    if [ ! -z "$packages" ]; then
-        echo "Error: Cannot uninstall Setup.sh before uninstalling all of the packages."
+
+    # Check setup-sh in system
+    if [ ! -d "$sys_setup_sh_dir" ]; then
+        echo "Error: Setup.sh has not been installed"
         exit 1
+    fi
+
+    # Check packages in system
+    if [ "$1" != "--force" ] && [ -d "$sys_pkgs_dir" ]; then
+        local packages=$(ls -1 "$sys_pkgs_dir")
+        if [ ! -z "$packages" ]; then
+            echo "Error: Cannot uninstall Setup.sh before uninstalling all of the packages."
+            exit 1
+        fi
     fi
 
     echo "Uninstall: started"
 
+    cd "$sys_setup_sh_dir"
+
     remove_files "$pkg_bin_dir" "$sys_bin_dir"
     remove_files "$pkg_lib_dir" "$sys_lib_dir"
     remove_files "$pkg_share_dir" "$sys_share_dir"
+    remove_files "$pkg_init_dir" "$sys_init_dir"
     # Avoid removing $sys_etc_dir/setup.conf and preserve relative administration efforts
+
+    cd - >/dev/null
+
+    # Delete setup-sh from system
+    rm -rf "$sys_setup_sh_dir"
 
     echo "Uninstall: finished"
 }
@@ -104,6 +133,7 @@ init_sys_dirs() {
     sys_etc_dir="$sys_root_dir/etc"
 
     sys_pkgs_dir="$sys_root_dir/usr/lib/setup/packages"
+    sys_setup_sh_dir="$sys_root_dir/usr/lib/setup/setup-sh"
 }
 
 parse_root_dir_arg() {
@@ -124,7 +154,6 @@ parse_root_dir_arg() {
 
 . "lib/setup/common"
 . "lib/setup/info"
-
 dry_run=false
 
 require_args "$#" 1

@@ -17,8 +17,8 @@ install() {
 
     # Copy package to system
     if [ "$dry_run" = false ]; then
-        mkdir -p "$sys_pkgs_dir"
-        cp -r "$pkg_dir" "$sys_pkg_dir"
+        mkdir -p "$sys_pkg_dir"
+        cp -r "$pkg_dir"/* "$sys_pkg_dir"
     fi
 
     enter_pkg_dir "$pkg_dir"
@@ -86,13 +86,17 @@ func_exists() {
 }
 
 list_installed() {
-    mkdir -p "$sys_pkgs_dir"
-    for pkg_dir in "$sys_pkgs_dir"/*; do
-        local pkg_name=$(basename "$pkg_dir")
-        enter_pkg_dir "$pkg_dir"
-        echo "$pkg_name $VERSION"
-        exit_pkg_dir
-    done
+    if [ -d "$sys_pkgs_dir" ]; then
+        local packages=$(ls -1 "$sys_pkgs_dir")
+        if [ ! -z "$packages" ]; then
+            for pkg_dir in "$sys_pkgs_dir"/*; do
+                local pkg_name=$(basename "$pkg_dir")
+                enter_pkg_dir "$pkg_dir"
+                echo "$pkg_name $VERSION"
+                exit_pkg_dir
+            done
+        fi
+    fi
 }
 
 exec="setup"
