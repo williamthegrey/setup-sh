@@ -95,12 +95,20 @@ list_installed() {
     done
 }
 
+exec="setup"
+
+help() {
+    echo "$exec $setup_version"
+    usage
+}
+
 usage() {
     /bin/echo -e "Usage:"
-    /bin/echo -e "\tsetup install package_dir [--dry-run]"
-    /bin/echo -e "\tsetup uninstall package_name [--dry-run]"
-    /bin/echo -e "\tsetup list-installed"
-    /bin/echo -e "\tsetup version"
+    /bin/echo -e "\t$exec install package_dir [--dry-run]"
+    /bin/echo -e "\t$exec uninstall package_name [--dry-run]"
+    /bin/echo -e "\t$exec list-installed"
+    /bin/echo -e "\t$exec version"
+    /bin/echo -e "\t$exec help"
     /bin/echo -e "Arguments:"
     /bin/echo -e "\tpackage_dir\trelative or absolute path of the package"
     /bin/echo -e "\tpackage_name\tthe directory name of package_dir"
@@ -109,15 +117,14 @@ usage() {
 }
 
 parse_setup_args() {
-    sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
-
-    if [ "$#" -lt 2 ]; then
-        exit_with_usage
-    fi
     dry_run=false
-    if [ "$#" = 3 ]; then
-        if [ "$3" = "--dry-run" ]; then
+    if [ "$#" -gt 0 ]; then
+        if [ "$1" = "--dry-run" ]; then
+            shift
+
             dry_run=true
+
+            refuse_args "$#"
         else
             exit_with_usage
         fi
@@ -130,30 +137,49 @@ sys_root_dir="${SYS_ROOT_DIR}"
 . "$sys_root_dir/usr/lib/setup/info"
 sys_pkgs_dir="$sys_root_dir/usr/lib/setup/packages"
 
-if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
-    exit_with_usage
-fi
-
+require_args "$#" 1
 if [ "$1" = "install" ]; then
-    pkg_dir="$2"
+    shift
+
+    require_args "$#" 1
+    pkg_dir="$1"
     pkg_dir=$(realpath "$pkg_dir")
     pkg_name=$(basename "$pkg_dir")
+    sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
+    shift
+
     parse_setup_args "$@"
+
     install
 elif [ "$1" = "uninstall" ]; then
-    pkg_name="$2"
+    shift
+
+    require_args "$#" 1
+    pkg_name="$1"
+    sys_pkg_dir="$sys_pkgs_dir/$pkg_name"
+    shift
+
     parse_setup_args "$@"
+
     uninstall
 elif [ "$1" = "list-installed" ]; then
-    if [ "$#" != 1 ]; then
-        exit_with_usage
-    fi
+    shift
+
+    refuse_args "$#"
+
     list_installed
 elif [ "$1" = "version" ]; then
-    if [ "$#" != 1 ]; then
-        exit_with_usage
-    fi
+    shift
+
+    refuse_args "$#"
+
     print_setup_version
+elif [ "$1" = "help" ]; then
+    shift
+
+    refuse_args "$#"
+
+    help
 else
     exit_with_usage
 fi

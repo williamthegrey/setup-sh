@@ -78,11 +78,19 @@ uninstall() {
     echo "Uninstall: finished"
 }
 
+exec="./setup.sh"
+
+help() {
+    echo "$exec $setup_version"
+    usage
+}
+
 usage() {
     /bin/echo -e "Usage:"
-    /bin/echo -e "\t./setup.sh install <init_system> [--root-dir <dir>]"
-    /bin/echo -e "\t./setup.sh uninstall [--root-dir <dir>]"
-    /bin/echo -e "\t./setup.sh version"
+    /bin/echo -e "\t$exec install <init_system> [--root-dir <dir>]"
+    /bin/echo -e "\t$exec uninstall [--root-dir <dir>]"
+    /bin/echo -e "\t$exec version"
+    /bin/echo -e "\t$exec help"
     /bin/echo -e "Arguments:"
     /bin/echo -e "\tinit_system\tThe value can be: systemd|sysvinit|procd"
     /bin/echo -e "Options:"
@@ -100,10 +108,12 @@ init_sys_dirs() {
 
 parse_root_dir_arg() {
     if [ "$#" -gt 0 ]; then
-        require_args "$#" 2
         if [ "$1" = "--root-dir" ]; then
-            sys_root_dir="$2"
-            shift 2
+            shift
+
+            require_args "$#" 1
+            sys_root_dir="$1"
+            shift
 
             refuse_args "$#"
         else
@@ -144,6 +154,12 @@ elif [ "$1" = "version" ]; then
     refuse_args "$#"
 
     print_setup_version
+elif [ "$1" = "help" ]; then
+    shift
+
+    refuse_args "$#"
+
+    help
 else
     exit_with_usage
 fi
