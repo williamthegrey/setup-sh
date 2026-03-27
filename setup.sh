@@ -59,7 +59,7 @@ render_template() {
     local template_file="$1"
     shift
 
-    get_replace_options "$@" | xargs -d '\n' sed "template/$template_file" >"$template_file"
+    sed $(get_replace_options "$@") "template/$template_file" >"$template_file"
 }
 
 get_replace_options() {
