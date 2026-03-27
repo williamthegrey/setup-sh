@@ -3,7 +3,7 @@ Description=sample-package
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/sample-package --daemon
+ExecStart=/usr/local/bin/sample-package --daemon
 
 [Install]
 WantedBy=multi-user.target

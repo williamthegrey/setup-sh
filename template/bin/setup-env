@@ -47,8 +47,8 @@ export_info() {
 
 sys_root_dir="${SYS_ROOT_DIR}"
 . "$sys_root_dir/etc/setup.conf"
-. "$sys_root_dir/usr/lib/setup/common"
-sys_pkgs_dir="$sys_root_dir/usr/lib/setup/packages"
+. "$sys_root_dir/usr/local/lib/setup/common"
+sys_pkgs_dir="$sys_root_dir/usr/local/lib/setup/packages"
 
 script=$(realpath "$0")
 script_dir=$(dirname "$script")

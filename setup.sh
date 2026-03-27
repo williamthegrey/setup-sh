@@ -127,13 +127,13 @@ usage() {
 }
 
 init_sys_dirs() {
-    sys_bin_dir="$sys_root_dir/usr/bin"
-    sys_lib_dir="$sys_root_dir/usr/lib"
-    sys_share_dir="$sys_root_dir/usr/share"
+    sys_bin_dir="$sys_root_dir/usr/local/bin"
+    sys_lib_dir="$sys_root_dir/usr/local/lib"
+    sys_share_dir="$sys_root_dir/usr/local/share"
     sys_etc_dir="$sys_root_dir/etc"
 
-    sys_pkgs_dir="$sys_root_dir/usr/lib/setup/packages"
-    sys_setup_sh_dir="$sys_root_dir/usr/lib/setup/setup-sh"
+    sys_pkgs_dir="$sys_root_dir/usr/local/lib/setup/packages"
+    sys_setup_sh_dir="$sys_root_dir/usr/local/lib/setup/setup-sh"
 }
 
 parse_root_dir_arg() {

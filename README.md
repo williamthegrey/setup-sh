@@ -48,9 +48,9 @@ One you have installed Setup.sh, you will have this "/etc/setup.conf" config fil
 pkg_init_dir=sysvinit
 
 # sys dirs
-sys_bin_dir=/usr/bin
-sys_lib_dir=/usr/lib
-sys_share_dir=/usr/share
+sys_bin_dir=/usr/local/bin
+sys_lib_dir=/usr/local/lib
+sys_share_dir=/usr/local/share
 sys_init_dir=/etc/init.d
 sys_etc_dir=/etc
 sys_var_dir=/var
@@ -225,7 +225,7 @@ Here are the explanations of `DEV` variable:
 
 - When you are developing the package, you can execute your entrance scripts in bin directory without installing the whole package.
 - If you source `setup-env` in your scripts under the circumstance, Setup.sh will know that your scripts are executing outside of system bin directory (aka `sys_bin_dir` in setup.conf), so this script is considered to be executing in development mode, and the `DEV` variable is set to true.
-- If you install the package and execute your entrance scripts inside of system bin directory (by using `/usr/bin/sample-package` or just `sample-package`), with `setup-env` sourced in your scripts, Setup.sh will find out that your scripts are executing inside of system bin directory, so this script is considered to be executing in production mode, and the `DEV` variable is set to false.
+- If you install the package and execute your entrance scripts inside of system bin directory (by using `/usr/local/bin/sample-package` or just `sample-package`), with `setup-env` sourced in your scripts, Setup.sh will find out that your scripts are executing inside of system bin directory, so this script is considered to be executing in production mode, and the `DEV` variable is set to false.
 
 You can adapt your logic according to the value of `DEV` variable. But in most cases, in order to separate development mode and production mode, you only need to distinguish the paths of your package files in two modes, and logic can remain unchanged. You can use "DIR" variables to accomplish that, and here are the explanations:
 

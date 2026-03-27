@@ -4,7 +4,7 @@ PIDFILE="/var/run/sample-package.pid"
 
 case "$1" in
 start)
-    /usr/bin/sample-package --daemon &
+    /usr/local/bin/sample-package --daemon &
     echo "$!" >$PIDFILE
     ;;
 stop)
