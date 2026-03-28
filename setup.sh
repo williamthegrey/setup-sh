@@ -115,15 +115,15 @@ help() {
 }
 
 usage() {
-    /bin/echo -e "Usage:"
-    /bin/echo -e "\t$exec install <init_system> [--root-dir <dir>]"
-    /bin/echo -e "\t$exec uninstall [--root-dir <dir>]"
-    /bin/echo -e "\t$exec version"
-    /bin/echo -e "\t$exec help"
-    /bin/echo -e "Arguments:"
-    /bin/echo -e "\tinit_system\tThe value can be: systemd|sysvinit|procd"
-    /bin/echo -e "Options:"
-    /bin/echo -e "\t--root-dir\tThe root dir of installation destionation"
+    printf "Usage:\n"
+    printf "\t$exec install <init_system> [--root-dir <dir>]\n"
+    printf "\t$exec uninstall [--root-dir <dir>]\n"
+    printf "\t$exec version\n"
+    printf "\t$exec help\n"
+    printf "Arguments:\n"
+    printf "\tinit_system\tThe value can be: systemd|sysvinit|procd\n"
+    printf "Options:\n"
+    printf "\t--root-dir\tThe root dir of installation destionation\n"
 }
 
 init_sys_dirs() {

@@ -107,17 +107,17 @@ help() {
 }
 
 usage() {
-    /bin/echo -e "Usage:"
-    /bin/echo -e "\t$exec install package_dir [--dry-run]"
-    /bin/echo -e "\t$exec uninstall package_name [--dry-run]"
-    /bin/echo -e "\t$exec list-installed"
-    /bin/echo -e "\t$exec version"
-    /bin/echo -e "\t$exec help"
-    /bin/echo -e "Arguments:"
-    /bin/echo -e "\tpackage_dir\trelative or absolute path of the package"
-    /bin/echo -e "\tpackage_name\tthe directory name of package_dir"
-    /bin/echo -e "Options:"
-    /bin/echo -e "\t--dry-run\tonly print operations without actually executing them"
+    printf "Usage:\n"
+    printf "\t$exec install package_dir [--dry-run]\n"
+    printf "\t$exec uninstall package_name [--dry-run]\n"
+    printf "\t$exec list-installed\n"
+    printf "\t$exec version\n"
+    printf "\t$exec help\n"
+    printf "Arguments:\n"
+    printf "\tpackage_dir\trelative or absolute path of the package\n"
+    printf "\tpackage_name\tthe directory name of package_dir\n"
+    printf "Options:\n"
+    printf "\t--dry-run\tonly print operations without actually executing them\n"
 }
 
 parse_setup_args() {
