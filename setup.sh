@@ -46,6 +46,8 @@ generate_etc_files() {
         sys_init_dir="/etc/init.d"
     elif [ "$init_system" = "procd" ]; then
         sys_init_dir="/etc/init.d"
+    elif [ "$init_system" = "launchd" ]; then
+        sys_init_dir="/Library/LaunchDaemons"
     fi
 
     mkdir -p "$pkg_etc_dir"
@@ -121,7 +123,7 @@ usage() {
     printf "\t$exec version\n"
     printf "\t$exec help\n"
     printf "Arguments:\n"
-    printf "\tinit_system\tThe value can be: systemd|sysvinit|procd\n"
+    printf "\tinit_system\tThe value can be: systemd|sysvinit|procd|launchd\n"
     printf "Options:\n"
     printf "\t--root-dir\tThe root dir of installation destionation\n"
 }
@@ -161,7 +163,7 @@ if [ "$1" = "install" ]; then
     shift
 
     require_args "$#" 1
-    if [ "$1" = "systemd" ] || [ "$1" = "sysvinit" ] || [ "$1" = "procd" ]; then
+    if [ "$1" = "systemd" ] || [ "$1" = "sysvinit" ] || [ "$1" = "procd" ] || [ "$1" = "launchd" ]; then
         init_system="$1"
         shift
 

@@ -59,6 +59,8 @@ copy_files() {
             elif [ "$src_dir" = "procd" ]; then
                 for_each_file "$src_dir" "$dst_dir" make_executable
                 for_each_file "$src_dir" "$dst_dir" enable_procd
+            elif [ "$src_dir" = "launchd" ]; then
+                for_each_file "$src_dir" "$dst_dir" enable_launchd
             fi
         fi
     fi
@@ -113,6 +115,14 @@ enable_procd() {
     local dst_file="$2"
 
     echo_and_run "$dst_file" enable
+}
+
+enable_launchd() {
+    local src_file="$1"
+    local dst_file="$2"
+
+    local service_name=$(basename "$dst_file" .plist)
+    echo_and_run launchctl enable "system/$service_name"
 }
 
 create_dir() {

@@ -19,13 +19,14 @@ Currently Setup.sh supports the following init systems:
 - systemd
 - sysvinit
 - procd
+- launchd
 
 You should find out which one your system is using and install Setup.sh with:
 
 ```shell
 git clone https://github.com/williamthegrey/setup-sh.git
 cd setup-sh
-# Change "systemd" to your actual init system
+# Change "systemd" to your actual init system (systemd, sysvinit, procd, or launchd)
 sudo ./setup.sh install systemd
 ```
 
@@ -122,6 +123,7 @@ sample-package/
 ├── systemd/
 ├── sysvinit/
 ├── procd/
+├── launchd/
 └── package.sh
 ```
 
@@ -139,6 +141,7 @@ Here are the explanations of the subdirectories, alongside with package director
 - systemd: Contains systemd init scripts, which will be enabled by `systemctl` command after installation.
 - sysvinit: Contains sysvinit init scripts, which will be made executable and enabled by `update-rc.d` command after installation.
 - procd: Contains procd init scripts, which will be made executable and enabled by the script itself with an `enable` argument after installation.
+- launchd: Contains launchd plist files, which will be loaded and enabled by `launchctl` command after installation.
 - package.sh: Contains optional info of the package and optional installation hooks, which will not be copied to system during installation.
 
 ### Add Config files
@@ -155,13 +158,14 @@ This mechanism has the following benefits:
 
 ### Add Init scripts
 
-Currently, Setup.sh supports three init systems. If you want to add init scripts to your package, you don't have to add all three types of init scripts. Just add the types which you want to support.
+Currently, Setup.sh supports four init systems. If you want to add init scripts to your package, you don't have to add all four types of init scripts. Just add the types which you want to support.
 
 For example, If you only add init scripts in systemd directory and sysvinit directory in your package, then:
 
 - On a system in which Setup.sh was installed with "systemd" argument (therefore setup.conf says `pkg_init_dir=systemd`), only systemd scripts in your package will be copied to that system.
 - On a system in which Setup.sh was installed with "sysvinit" argument (therefore setup.conf says `pkg_init_dir=sysvinit`), only sysvinit scripts in your package will be copied to that system.
 - On a system in which Setup.sh was installed with "procd" argument (therefore setup.conf says `pkg_init_dir=procd`), no init scripts in your package will be copied to that system.
+- On a system in which Setup.sh was installed with "launchd" argument (therefore setup.conf says `pkg_init_dir=launchd`), no init scripts in your package will be copied to that system.
 
 This mechanism ensures every system will only be installed with compatible init scripts instead of useless ones.
 
