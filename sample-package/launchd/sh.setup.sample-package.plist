@@ -3,15 +3,24 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.example.sample-package</string>
+    <string>sh.setup.sample-package</string>
     <key>ProgramArguments</key>
     <array>
         <string>/usr/local/bin/sample-package</string>
         <string>--daemon</string>
     </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
     <true/>
+    <key>StandardOutPath</key>
+    <string>/var/log/sample-package.log</string>
+    <key>StandardErrorPath</key>
+    <string>/var/log/sample-package.log</string>
 </dict>
 </plist>
